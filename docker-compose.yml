@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mysql:
+     image: mysql:latest
+     container_name: mysql
+
+     environment:
+       MYSQL_ROOT_PASSWORD: root
+       MYSQL_DATABASE: fitness_db
+       MYSQL_USER: hemant
+       MYSQL_PASSWORD: 1234
+     ports:
+       - 3307:3306
+     networks:
+       - fitness-mysql-nw
+
+  app:
+     build: .
+     container_name: fitness-app
+     ports:
+       - "8080:8080"
+     networks:
+       - fitness-mysql-nw
+
+networks:
+  fitness-mysql-nw:
+    driver: bridge
