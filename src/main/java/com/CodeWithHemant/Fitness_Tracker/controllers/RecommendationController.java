@@ -25,29 +25,29 @@ public class RecommendationController {
     }
 
     @GetMapping("/user/{userId}/recommendations") //find recommendations based on User.
-    public ResponseEntity<List<RecommendationResponseDto>> getUserRecommendation(
+    public ResponseEntity<RecommendationResponse> getUserRecommendation(
             @PathVariable("userId") String userId,
             @RequestParam(value = "pageSize",defaultValue = "5",required = false) Integer pageSize,
             @RequestParam(value = "pageNo",defaultValue = "0",required = false) Integer pageNo,
             @RequestParam(value = "sortBy",defaultValue = "id",required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDirection){
-        List<RecommendationResponseDto> recommendationResponseDtos = recommendationService.getUserRecommendation(userId,pageSize,pageNo,sortBy,sortDirection);
-        return new ResponseEntity<>(recommendationResponseDtos,HttpStatus.OK);
+           RecommendationResponse recommendationResponse = recommendationService.getUserRecommendation(userId,pageSize,pageNo,sortBy,sortDirection);
+        return new ResponseEntity<>(recommendationResponse,HttpStatus.OK);
     }
 
     @GetMapping("/activity/{activityId}/recommendations")  //find Recommendation Based On Activity.
-    public ResponseEntity<List<RecommendationResponseDto>> getActivityRecommendation(
+    public ResponseEntity<RecommendationResponse> getActivityRecommendation(
             @PathVariable("activityId") String activityId,
             @RequestParam(value = "pageSize",defaultValue = "5",required = false) Integer pageSize,
             @RequestParam(value = "pageNo",defaultValue = "0",required = false) Integer pageNo,
             @RequestParam(value = "sortBy",defaultValue = "id",required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDirection){
-        List<RecommendationResponseDto> recommendationResponseDtos = recommendationService.getActivityRecommendation(activityId,pageSize,pageNo,sortBy,sortDirection);
-        return new ResponseEntity<>(recommendationResponseDtos,HttpStatus.OK);
+        RecommendationResponse recommendationResponse = recommendationService.getActivityRecommendation(activityId,pageSize,pageNo,sortBy,sortDirection);
+        return new ResponseEntity<>(recommendationResponse,HttpStatus.OK);
     }
 
     @GetMapping("/recommendations")
-    public ResponseEntity<List<RecommendationResponseDto>> getAllRecommendations(
+    public ResponseEntity<RecommendationResponse> getAllRecommendations(
             @RequestParam(value = "pageSize",defaultValue = "5",required = false) Integer pageSize,
             @RequestParam(value = "pageNo",defaultValue = "0",required = false) Integer pageNo,
             @RequestParam(value = "sortBy",defaultValue = "id",required = false) String sortBy,

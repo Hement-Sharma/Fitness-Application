@@ -1,9 +1,6 @@
 package com.CodeWithHemant.Fitness_Tracker.controllers;
 
-import com.CodeWithHemant.Fitness_Tracker.paylods.ApiResponse;
-import com.CodeWithHemant.Fitness_Tracker.paylods.UserRequestDto;
-import com.CodeWithHemant.Fitness_Tracker.paylods.UserResponseDto;
-import com.CodeWithHemant.Fitness_Tracker.paylods.UserUpdateDto;
+import com.CodeWithHemant.Fitness_Tracker.paylods.*;
 import com.CodeWithHemant.Fitness_Tracker.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +18,14 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponseDto>> getAllUsers(
+    public ResponseEntity<UserResponse> getAllUsers(
             @RequestParam(value = "pageSize",defaultValue = "5",required = false) Integer pageSize,
             @RequestParam(value = "pageNo",defaultValue = "0",required = false) Integer pageNo,
             @RequestParam(value = "sortBy",defaultValue = "id",required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDirection
     ){
-      List<UserResponseDto> userResponseDtos = userService.getAllUsers(pageSize,pageNo,sortBy,sortDirection);
-      return ResponseEntity.ok(userResponseDtos);
+      UserResponse userResponse = userService.getAllUsers(pageSize,pageNo,sortBy,sortDirection);
+      return ResponseEntity.ok(userResponse);
     }
 
     @GetMapping("/user/{userId}")

@@ -5,7 +5,9 @@ import com.CodeWithHemant.Fitness_Tracker.entities.User;
 import com.CodeWithHemant.Fitness_Tracker.exceptions.ResourceNotFoundException;
 import com.CodeWithHemant.Fitness_Tracker.mappers.ActivityMapper;
 import com.CodeWithHemant.Fitness_Tracker.paylods.ActivityRequestDto;
+import com.CodeWithHemant.Fitness_Tracker.paylods.ActivityResponse;
 import com.CodeWithHemant.Fitness_Tracker.paylods.ActivityResponseDto;
+import com.CodeWithHemant.Fitness_Tracker.paylods.UserResponse;
 import com.CodeWithHemant.Fitness_Tracker.repositories.ActivityRepo;
 import com.CodeWithHemant.Fitness_Tracker.repositories.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,7 @@ public class ActivityService {
         return savedActivityResponseDto;
     }
 
-    public List<ActivityResponseDto> getUserActivities(String userId,Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
+    public ActivityResponse getUserActivities(String userId, Integer pageSize, Integer pageNum, String sortBy, String sortDir) {
 
         Sort sort;
 
@@ -50,7 +52,17 @@ public class ActivityService {
         Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Page<Activity> pageActivities = activityRepo.findByUserId(userId,pageable);
        List<Activity> userActivities = pageActivities.toList();
-       return userActivities.stream().map(ActivityMapper::activityToActivityResponseDto).collect(Collectors.toList());
+       List<ActivityResponseDto> activityResponseDtos = userActivities.stream().map(ActivityMapper::activityToActivityResponseDto).collect(Collectors.toList());
+
+        ActivityResponse activityResponse = new ActivityResponse();
+        activityResponse.setActivities(activityResponseDtos);
+        activityResponse.setPageNumber(pageActivities.getNumber());
+        activityResponse.setPageSize(pageActivities.getSize());
+        activityResponse.setTotalPages(pageActivities.getTotalPages());
+        activityResponse.setTotalElements(pageActivities.getTotalElements());
+        activityResponse.setLastPage(pageActivities.isLast());
+
+        return activityResponse;
     }
 
     public ActivityResponseDto getSingleActivityById(String actId) {
@@ -75,7 +87,7 @@ public class ActivityService {
         activityRepo.delete(activity);
     }
 
-    public  List<ActivityResponseDto> getAllActivities(Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
+    public  ActivityResponse getAllActivities(Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
 
         Sort sort;
 
@@ -89,6 +101,15 @@ public class ActivityService {
         Page<Activity> pageActivities = activityRepo.findAll(pageable);
         List<Activity> activities = pageActivities.stream().toList();
         List<ActivityResponseDto> activityResponseDtos = activities.stream().map(activity -> ActivityMapper.activityToActivityResponseDto(activity)).collect(Collectors.toList());
-        return activityResponseDtos;
+
+        ActivityResponse activityResponse = new ActivityResponse();
+        activityResponse.setActivities(activityResponseDtos);
+        activityResponse.setPageNumber(pageActivities.getNumber());
+        activityResponse.setPageSize(pageActivities.getSize());
+        activityResponse.setTotalPages(pageActivities.getTotalPages());
+        activityResponse.setTotalElements(pageActivities.getTotalElements());
+        activityResponse.setLastPage(pageActivities.isLast());
+
+        return activityResponse;
     }
 }

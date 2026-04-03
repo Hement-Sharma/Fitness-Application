@@ -7,6 +7,7 @@ import com.CodeWithHemant.Fitness_Tracker.exceptions.ResourceNotFoundException;
 import com.CodeWithHemant.Fitness_Tracker.mappers.RecommendationMapper;
 import com.CodeWithHemant.Fitness_Tracker.paylods.ActivityResponseDto;
 import com.CodeWithHemant.Fitness_Tracker.paylods.RecommendationRequestDto;
+import com.CodeWithHemant.Fitness_Tracker.paylods.RecommendationResponse;
 import com.CodeWithHemant.Fitness_Tracker.paylods.RecommendationResponseDto;
 import com.CodeWithHemant.Fitness_Tracker.repositories.ActivityRepo;
 import com.CodeWithHemant.Fitness_Tracker.repositories.RecommendationRepo;
@@ -42,7 +43,7 @@ public class RecommendationService {
         return RecommendationMapper.recommendationToRecommendationResponseDto(savedRecommendation);
     }
 
-    public List<RecommendationResponseDto> getUserRecommendation(String userId,Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
+    public RecommendationResponse getUserRecommendation(String userId,Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
 
         Sort sort;
 
@@ -55,26 +56,46 @@ public class RecommendationService {
         Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Page<Recommendation> pageRecommendation = recommendationRepo.findByUserId(userId,pageable);
         List<Recommendation> recommendations = pageRecommendation.toList();
-        return recommendations.stream().map(recommendation -> RecommendationMapper.recommendationToRecommendationResponseDto(recommendation)).collect(Collectors.toList());
+        List<RecommendationResponseDto> recommendationResponseDtos = recommendations.stream().map(recommendation -> RecommendationMapper.recommendationToRecommendationResponseDto(recommendation)).collect(Collectors.toList());
+
+        RecommendationResponse recommendationResponse = new RecommendationResponse();
+        recommendationResponse.setRecommendations(recommendationResponseDtos);
+        recommendationResponse.setPageNumber(pageRecommendation.getNumber());
+        recommendationResponse.setPageSize(pageRecommendation.getSize());
+        recommendationResponse.setTotalPages(pageRecommendation.getTotalPages());
+        recommendationResponse.setTotalElements(pageRecommendation.getTotalElements());
+        recommendationResponse.setLastPage(pageRecommendation.isLast());
+
+        return recommendationResponse;
     }
 
-    public List<RecommendationResponseDto> getActivityRecommendation(String activityId,Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
+    public RecommendationResponse getActivityRecommendation(String activityId,Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
 
         Sort sort;
 
-        if(sortDir.equalsIgnoreCase("desc")){
+        if (sortDir.equalsIgnoreCase("desc")) {
             sort = Sort.by(sortBy).descending();
-        }else {
+        } else {
             sort = Sort.by(sortBy); //by default ascending
         }
 
-        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
-        Page<Recommendation> pageRecommendation = recommendationRepo.findByActivityId(activityId,pageable);
+        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+        Page<Recommendation> pageRecommendation = recommendationRepo.findByActivityId(activityId, pageable);
         List<Recommendation> recommendations = pageRecommendation.toList();
-        return recommendations.stream().map(recommendation -> RecommendationMapper.recommendationToRecommendationResponseDto(recommendation)).collect(Collectors.toList());
+        List<RecommendationResponseDto> recommendationResponseDtos = recommendations.stream().map(recommendation -> RecommendationMapper.recommendationToRecommendationResponseDto(recommendation)).collect(Collectors.toList());
+
+        RecommendationResponse recommendationResponse = new RecommendationResponse();
+        recommendationResponse.setRecommendations(recommendationResponseDtos);
+        recommendationResponse.setPageNumber(pageRecommendation.getNumber());
+        recommendationResponse.setPageSize(pageRecommendation.getSize());
+        recommendationResponse.setTotalPages(pageRecommendation.getTotalPages());
+        recommendationResponse.setTotalElements(pageRecommendation.getTotalElements());
+        recommendationResponse.setLastPage(pageRecommendation.isLast());
+
+        return recommendationResponse;
     }
 
-    public  List<RecommendationResponseDto> getAllRecommendations(Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
+    public  RecommendationResponse getAllRecommendations(Integer pageSize,Integer pageNum,String sortBy,String sortDir) {
 
         Sort sort;
 
@@ -87,7 +108,17 @@ public class RecommendationService {
         Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Page<Recommendation> pageRecommendation = recommendationRepo.findAll(pageable);
         List<Recommendation> recommendations = pageRecommendation.toList();
-        return recommendations.stream().map(recommendation -> RecommendationMapper.recommendationToRecommendationResponseDto(recommendation)).collect(Collectors.toList());
+        List<RecommendationResponseDto> recommendationResponseDtos = recommendations.stream().map(recommendation -> RecommendationMapper.recommendationToRecommendationResponseDto(recommendation)).collect(Collectors.toList());
+
+        RecommendationResponse recommendationResponse = new RecommendationResponse();
+        recommendationResponse.setRecommendations(recommendationResponseDtos);
+        recommendationResponse.setPageNumber(pageRecommendation.getNumber());
+        recommendationResponse.setPageSize(pageRecommendation.getSize());
+        recommendationResponse.setTotalPages(pageRecommendation.getTotalPages());
+        recommendationResponse.setTotalElements(pageRecommendation.getTotalElements());
+        recommendationResponse.setLastPage(pageRecommendation.isLast());
+
+       return recommendationResponse;
     }
 
     public RecommendationResponseDto getSingleRecommendationById(String recomId) {

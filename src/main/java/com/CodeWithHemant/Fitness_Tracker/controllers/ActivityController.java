@@ -25,7 +25,7 @@ public class ActivityController {
     }
 
     @GetMapping("/userActivities")
-    public ResponseEntity<List<ActivityResponseDto>> getUserActivities(
+    public ResponseEntity<ActivityResponse> getUserActivities(
             @RequestParam(value = "pageSize",defaultValue = "5",required = false) Integer pageSize,
             @RequestParam(value = "pageNo",defaultValue = "0",required = false) Integer pageNo,
             @RequestParam(value = "sortBy",defaultValue = "id",required = false) String sortBy,
@@ -35,7 +35,7 @@ public class ActivityController {
     }
 
     @GetMapping("/activities")
-    public ResponseEntity<List<ActivityResponseDto>> getAllActivities(
+    public ResponseEntity<ActivityResponse> getAllActivities(
             @RequestParam(value = "pageSize",defaultValue = "5",required = false) Integer pageSize,
             @RequestParam(value = "pageNo",defaultValue = "0",required = false) Integer pageNo,
             @RequestParam(value = "sortBy",defaultValue = "id",required = false) String sortBy,
